@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.spring.training.core-spring</groupId>
+        <artifactId>parentProject</artifactId>
+        <version>5.3.23</version>
+    </parent>
+
+    <artifactId>dining-rewards</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Dining Rewards Application</name>
+    <description>Spring introduction - rewards network application for restaurant dining</description>
+
+    <organization>
+        <name>Spring Training</name>
+        <url>https://spring.io/training</url>
+    </organization>
+
+    <dependencies>
+        <!-- Internal dependency -->
+        <dependency>
+            <groupId>io.spring.training.core-spring</groupId>
+            <artifactId>00-rewards-common</artifactId>
+        </dependency>
+    </dependencies>
+</project>
