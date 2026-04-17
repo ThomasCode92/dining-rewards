@@ -18,9 +18,9 @@ public class TestInfrastructureConfig {
      */
     @Bean
     public DataSource dataSource() {
-        return (new EmbeddedDatabaseBuilder()) //
-                .addScript("classpath:rewards/testdb/schema.sql") //
-                .addScript("classpath:rewards/testdb/data.sql") //
+        return (new EmbeddedDatabaseBuilder())
+                .addScript("classpath:rewards/testdb/schema.sql")
+                .addScript("classpath:rewards/testdb/data.sql")
                 .build();
     }
 }

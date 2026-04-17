@@ -13,6 +13,14 @@ import java.sql.SQLException;
 /**
  * Loads accounts from a data source using the JDBC API.
  */
+
+/* TODO-05: Let this class to be found in component-scanning
+ * - Annotate the class with an appropriate stereotype annotation
+ *   to cause component-scan to detect and load this bean.
+ * - Inject dataSource by annotating setDataSource() method
+ *   with @Autowired.
+ */
+
 public class JdbcAccountRepository implements AccountRepository {
 
     private DataSource dataSource;
@@ -124,10 +132,7 @@ public class JdbcAccountRepository implements AccountRepository {
                 // set internal entity identifier (primary key)
                 account.setEntityId(rs.getLong("ID"));
             }
-            Beneficiary b = mapBeneficiary(rs);
-            if (b != null) {
-                account.restoreBeneficiary(b);
-            }
+            account.restoreBeneficiary(mapBeneficiary(rs));
         }
         if (account == null) {
             // no rows returned - throw an empty result exception
@@ -146,8 +151,7 @@ public class JdbcAccountRepository implements AccountRepository {
     private Beneficiary mapBeneficiary(ResultSet rs) throws SQLException {
         String name = rs.getString("BENEFICIARY_NAME");
         if (name == null) {
-            // apparently no beneficiary for this
-            return null;
+            return null; // apparently no beneficiary for this
         }
         MonetaryAmount savings = MonetaryAmount.valueOf(rs.getString("BENEFICIARY_SAVINGS"));
         Percentage allocationPercentage = Percentage.valueOf(rs.getString("BENEFICIARY_ALLOCATION_PERCENTAGE"));
