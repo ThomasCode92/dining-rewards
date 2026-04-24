@@ -1,43 +1,72 @@
 package rewards.internal.restaurant;
 
 import common.money.Percentage;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Loads restaurants from a data source using the JDBC API.
+ * <p>
+ * This implementation should cache restaurants to improve performance. The
+ * cache should be populated on initialization and cleared on destruction.
  */
+
+@Repository
 public class JdbcRestaurantRepository implements RestaurantRepository {
 
     private DataSource dataSource;
 
     /**
-     * Sets the data source this repository will use to load restaurants.
-     *
-     * @param dataSource the data source
+     * The Restaurant object cache. Cached restaurants are indexed
+     * by their merchant numbers.
      */
+    private Map<String, Restaurant> restaurantCache;
+
+    public JdbcRestaurantRepository() {
+    }
+
+    @Autowired
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
     public Restaurant findByMerchantNumber(String merchantNumber) {
-        String sql = "select MERCHANT_NUMBER, NAME, BENEFIT_PERCENTAGE from T_RESTAURANT where MERCHANT_NUMBER = ?";
-        Restaurant restaurant = null;
+        return queryRestaurantCache(merchantNumber);
+    }
+
+    /**
+     * Helper method that populates the restaurantCache restaurant object
+     * caches from the rows in the T_RESTAURANT table. Cached restaurants are indexed
+     * by their merchant numbers. This method should be called on initialization.
+     */
+
+    @PostConstruct
+    void populateRestaurantCache() {
+        restaurantCache = new HashMap<String, Restaurant>();
+        String sql = "select MERCHANT_NUMBER, NAME, BENEFIT_PERCENTAGE from T_RESTAURANT";
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             conn = dataSource.getConnection();
             ps = conn.prepareStatement(sql);
-            ps.setString(1, merchantNumber);
             rs = ps.executeQuery();
-            advanceToNextRow(rs);
-            restaurant = mapRestaurant(rs);
+            while (rs.next()) {
+                Restaurant restaurant = mapRestaurant(rs);
+                // index the restaurant by its merchant number
+                restaurantCache.put(restaurant.getNumber(), restaurant);
+            }
         } catch (SQLException e) {
             throw new RuntimeException("SQL exception occurred finding by merchant number", e);
         } finally {
@@ -63,7 +92,31 @@ public class JdbcRestaurantRepository implements RestaurantRepository {
                 }
             }
         }
+    }
+
+    /**
+     * Helper method that simply queries the cache of restaurants.
+     *
+     * @param merchantNumber the restaurant's merchant number
+     * @return the restaurant
+     * @throws EmptyResultDataAccessException if no restaurant was found with that merchant number
+     */
+    private Restaurant queryRestaurantCache(String merchantNumber) {
+        Restaurant restaurant = restaurantCache.get(merchantNumber);
+        if (restaurant == null) {
+            throw new EmptyResultDataAccessException(1);
+        }
         return restaurant;
+    }
+
+    /**
+     * Helper method that clears the cache of restaurants.
+     * This method should be called when a bean is destroyed.
+     */
+    @PreDestroy
+    public void clearRestaurantCache() {
+        System.out.println("clearRestaurantCache invoked");
+        restaurantCache.clear();
     }
 
     /**
@@ -81,18 +134,4 @@ public class JdbcRestaurantRepository implements RestaurantRepository {
         restaurant.setBenefitPercentage(benefitPercentage);
         return restaurant;
     }
-
-    /**
-     * Advances a ResultSet to the next row and throws an exception if there are no rows.
-     *
-     * @param rs the ResultSet to advance
-     * @throws EmptyResultDataAccessException if there is no next row
-     * @throws SQLException
-     */
-    private void advanceToNextRow(ResultSet rs) throws EmptyResultDataAccessException, SQLException {
-        if (!rs.next()) {
-            throw new EmptyResultDataAccessException(1);
-        }
-    }
-
 }

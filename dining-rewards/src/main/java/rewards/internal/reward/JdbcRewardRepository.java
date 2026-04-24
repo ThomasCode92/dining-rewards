@@ -1,6 +1,8 @@
 package rewards.internal.reward;
 
 import common.datetime.SimpleDate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import rewards.AccountContribution;
 import rewards.Dining;
 import rewards.RewardConfirmation;
@@ -9,9 +11,12 @@ import javax.sql.DataSource;
 import java.sql.*;
 
 /**
- * JDBC implementation of a reward repository that records the result of a reward transaction by inserting a reward
- * confirmation record.
+ * JDBC implementation of a reward repository that
+ * records the result of a reward transaction by
+ * inserting a reward confirmation record.
  */
+
+@Repository
 public class JdbcRewardRepository implements RewardRepository {
 
     private DataSource dataSource;
@@ -21,6 +26,7 @@ public class JdbcRewardRepository implements RewardRepository {
      *
      * @param dataSource the data source
      */
+    @Autowired
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
