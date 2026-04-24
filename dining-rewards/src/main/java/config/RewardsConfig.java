@@ -33,7 +33,9 @@ public class RewardsConfig {
     }
 
     public RestaurantRepository restaurantRepository() {
-        return new JdbcRestaurantRepository(dataSource);
+        JdbcRestaurantRepository restaurantRepository = new JdbcRestaurantRepository();
+        restaurantRepository.setDataSource(dataSource);
+        return restaurantRepository;
     }
 
     public RewardRepository rewardRepository() {
