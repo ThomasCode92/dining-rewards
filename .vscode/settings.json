@@ -13,6 +13,25 @@
   "java.inlayHints.parameterNames.enabled": "all",
   "java.format.enabled": false,
 
+  // Formatting with Spotless Gradle
+  "[java]": {
+    "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
+    "spotlessGradle.diagnostics.enable": true,
+    "spotlessGradle.format.enable": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.spotlessGradle": "always"
+    }
+  },
+  "[gradle]": {
+    "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
+    "files.trimTrailingWhitespace": false,
+    "spotlessGradle.diagnostics.enable": true,
+    "spotlessGradle.format.enable": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.spotlessGradle": "always"
+    }
+  },
+
   // Custom Spell Checker Dictionary
   "cSpell.customDictionaries": {
     "custom-dictionary-workspace": {
