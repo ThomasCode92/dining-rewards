@@ -1,3 +1,25 @@
 {
-    "java.compile.nullAnalysis.mode": "automatic"
+  // Editor Settings
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always"
+  },
+  "explorer.excludeGitIgnore": true,
+
+  // Java Language Support
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.inlayHints.parameterNames.enabled": "all",
+  "java.format.enabled": false,
+
+  // Custom Spell Checker Dictionary
+  "cSpell.customDictionaries": {
+    "custom-dictionary-workspace": {
+      "name": "custom-dictionary-workspace",
+      "path": "${workspaceFolder}/.cspell/custom-dictionary-workspace.txt",
+      "addWords": true,
+      "scope": "workspace"
+    }
+  }
 }
