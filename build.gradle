@@ -1,8 +1,6 @@
 plugins {
 	id 'com.diffplug.spotless' version "8.9.0"
 	id 'java'
-	id 'org.springframework.boot' version '4.1.1'
-	id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'dining-rewards'
@@ -33,12 +31,15 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-	runtimeOnly 'org.hsqldb:hsqldb'
-	testImplementation 'org.springframework.boot:spring-boot-starter-data-jdbc-test'
+	implementation platform('org.springframework:spring-framework-bom:7.0.9')
+	implementation 'org.springframework:spring-context'
+
+	testImplementation platform('org.junit:junit-bom:6.0.3')
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-tasks.named('test') {
+tasks.named('test', Test) {
 	useJUnitPlatform()
 }
