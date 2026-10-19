@@ -1,6 +1,6 @@
 import org.apache.tools.ant.DirectoryScanner
 
-rootProject.name = 'rewards'
+rootProject.name = 'dining-rewards'
 
 // HACK: include .gitignore and .gitattributes files in the Gradle build scan
 // see Github issue: https://github.com/diffplug/spotless/issues/1146#issuecomment-1461408668
