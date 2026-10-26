@@ -1,5 +1,6 @@
 package rewards.internal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,11 @@ class RewardNetworkImplTests {
 
     @BeforeEach
     void setUp() {
-        rewardNetwork = new RewardNetworkImpl();
+        // Create stubs to facilitate fast in-memory testing with dummy data and no external
+        // dependencies.
+        var accountRepository = new StubAccountRepository();
+
+        rewardNetwork = new RewardNetworkImpl(accountRepository);
     }
 
     @Test
@@ -41,5 +46,8 @@ class RewardNetworkImplTests {
         // assert an account contribution was made
         AccountContribution contribution = confirmation.accountContribution();
         assertNotNull(contribution);
+
+        // assert the account number should be '123456789'
+        assertEquals("123456789", contribution.getAccountNumber());
     }
 }

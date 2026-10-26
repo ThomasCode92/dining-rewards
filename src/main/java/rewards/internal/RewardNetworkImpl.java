@@ -1,9 +1,9 @@
 package rewards.internal;
 
-import rewards.AccountContribution;
 import rewards.Dining;
 import rewards.RewardConfirmation;
 import rewards.RewardNetwork;
+import rewards.internal.account.AccountRepository;
 
 import java.util.Random;
 
@@ -18,11 +18,23 @@ import java.util.Random;
  */
 public class RewardNetworkImpl implements RewardNetwork {
 
+    private final AccountRepository accountRepository;
+
     private final Random random = new Random();
+
+    /**
+     * Creates a new reward network.
+     *
+     * @param accountRepository the repository for loading accounts to reward
+     */
+    public RewardNetworkImpl(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
 
     @Override
     public RewardConfirmation rewardAccountFor(Dining dining) {
-        AccountContribution contribution = new AccountContribution();
+        var account = this.accountRepository.findByCreditCard(dining.getCreditCardNumber());
+        var contribution = account.makeContribution(dining.getAmount());
 
         return new RewardConfirmation(random.toString(), contribution);
     }
